@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Bankend ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aashutoshpatel11/Backend.git"
+  },
+  "keywords": [
+    "Node",
+    "Backend",
+    "Express"
+  ],
+  "author": "Aashutosh Patel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aashutoshpatel11/Backend/issues"
+  },
+  "homepage": "https://github.com/Aashutoshpatel11/Backend#readme"
+}
