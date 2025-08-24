@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Aashutoshpatel11/Backend#readme",
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
   }
 }
