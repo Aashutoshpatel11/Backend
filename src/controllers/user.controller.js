@@ -139,7 +139,7 @@ const loginUser = asyncHandler( async(req, res) => {
         new ApiResponse(
             200,
             {
-                user: loginUser, accessToken, refreshToken
+                user: loggedInUser, accessToken, refreshToken
             },
             "user logged successfully"
         )
@@ -169,6 +169,58 @@ const logoutUser = asyncHandler( async(req, res) => {
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User logged Out"))
+
+} )
+
+const refreshAccessToken = asyncHandler( async(req, res) => {
+    // -> get refresh token
+    // -> decode
+    // -> get user
+    // -> check user token and db token
+    // I.E. if same( regenerate access token ) else()login again
+    // -> give response
+
+    const incomingRefreshToken = req.cookie.refreshToken || req.body.refreshToken;
+
+    if( !incomingRefreshToken ){
+        throw new ApiError(401, "unauthorised request" )
+    }
+
+    try {
+        const decodedToken = JsonWebTokenError.verify(incomingRefreshToken, process.env.REFRESH_TOKEN_SECRET)
+
+        const user = await User.findById(decodedToken._id)
+
+        if(!user){
+            throw new ApiError(401, "invalid refresh token" )
+        }
+
+        if( user.refreshToken != incomingRefreshToken ){
+            throw new ApiError(401, "refresh token expired or used")
+        }
+
+        const { accessToken, newRefreshToken } =  await generateAccessAndRefreshToken( user._id )
+
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+
+        return res
+        .status(200)
+        .cookie( "Access Token", accessToken, options )
+        .cookie( "Refresh Token", newRefreshToken, options )
+        .json(
+            200,
+            {
+                accessToken, "refreshToken": newRefreshToken,
+            },
+            "Access token Refreshed Successfully"
+        )
+
+    } catch (error) {
+        throw new ApiError( 401, error?.message || "invalid refresh token" )
+    }
 
 } )
 
