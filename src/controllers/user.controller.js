@@ -234,19 +234,19 @@ const changeCurrentPassword = asyncHandler( async(req, res) => {
     const {currentPassword, newPassword} = req.body
 
     if( !(currentPassword && newPassword) ){
-        throw ApiError(401, "Please fill all fields")
+        throw new ApiError(401, "Please fill all fields")
     }
 
     const user = await User.findById(req.user?._id)
 
     if( !user ){
-        throw ApiError(401, "user not found")
+        throw new ApiError(401, "user not found")
     }
 
     const isPasswordCorrect = user.isPasswordCorrect(currentPassword)
 
     if( !isPasswordCorrect ){
-        throw ApiError(401, "incorrect password")
+        throw new ApiError(401, "incorrect password")
     }
 
     user.password = newPassword;
@@ -256,9 +256,11 @@ const changeCurrentPassword = asyncHandler( async(req, res) => {
     return res
     .status(200)
     .json(
-        200,
-        user,
-        "Password Updated Successfully"
+        new ApiResponse(
+            200,
+            user,
+            "Password Updated Successfully" 
+        )
     )
 
 } )
@@ -266,11 +268,52 @@ const changeCurrentPassword = asyncHandler( async(req, res) => {
 const getCurrentUser = asyncHandler( async(req, res) => {
     return res
     .status(200)
-    .ApiResponse(
-        200,
-        req.user,
-        "User details fetched successfully"
+    .json(
+        new ApiResponse(
+            200,
+            req.user,
+            "User details fetched successfully"
+        )
     )
+} )
+
+const updateAccountDetails = asyncHandler( async(req, res) => {
+    // username, email, fullname
+    // get this 3 from req.body
+    // req.user
+    // get current user
+    // update user detailes
+    // save
+
+    const{username, email, fullname} = req.body;
+    if( !(username || email || fullname) ){
+        throw new ApiError(401, "All fields are mandortory")
+    }
+
+    const user = await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {
+                username,
+                email,
+                fullname
+            }
+        },
+        {
+            new: true
+        }
+    )
+
+    return res
+    .status(200)
+    .json(
+        nenw ApiResponse(
+            200,
+            user,
+            "User Details updated successfully"
+        )
+    )
+
 } )
 
 export {
@@ -279,5 +322,6 @@ export {
     logoutUser,
     refreshAccessToken,
     changeCurrentPassword,
-    getCurrentUser
+    getCurrentUser,
+    updateAccountDetails
 }
