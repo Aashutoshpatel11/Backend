@@ -307,10 +307,46 @@ const updateAccountDetails = asyncHandler( async(req, res) => {
     return res
     .status(200)
     .json(
-        nenw ApiResponse(
+        new ApiResponse(
             200,
             user,
             "User Details updated successfully"
+        )
+    )
+
+} )
+
+const updateUserAvatar = asyncHandler( async(req, res) => {
+    //  req.file from multer
+    // get local path
+    // upload on cloudinary and get url
+    // update current user and save
+
+    const avatarLocalPath = req.file?.path;
+
+    if(!avatarLocalPath){
+        throw new ApiError(401, "AVatar file is required")
+    }
+
+    const avatar = await uploadOnCloudinary(avatarLocalPath);
+
+    if(!avatar?){
+        throw new ApiError(401, "something went wrong while uploading file on cloudinary!")
+    }
+
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: {avatar: avatar?.url}
+        },
+    )
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Avater updated successfully"
         )
     )
 
@@ -323,5 +359,6 @@ export {
     refreshAccessToken,
     changeCurrentPassword,
     getCurrentUser,
-    updateAccountDetails
+    updateAccountDetails,
+    updateUserAvatar
 }
