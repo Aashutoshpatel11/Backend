@@ -330,8 +330,8 @@ const updateUserAvatar = asyncHandler( async(req, res) => {
 
     const avatar = await uploadOnCloudinary(avatarLocalPath);
 
-    if(!avatar?){
-        throw new ApiError(401, "something went wrong while uploading file on cloudinary!")
+    if(!avatar){
+        throw new ApiError(401, "something went wrong while uploading avatar file on cloudinary!")
     }
 
     await User.findByIdAndUpdate(
@@ -352,6 +352,36 @@ const updateUserAvatar = asyncHandler( async(req, res) => {
 
 } )
 
+const updateCoverImage = asyncHandler( async(req, res) => {
+    const coverImageLocalPath = req.file?.path
+    if(!coverImageLocalPath){
+        throw new ApiError(401, "CoverImage file is required")
+    }
+
+    const coverImage = await uploadOnCloudinary(coverImageLocalPath);
+
+    if(!coverImage){
+        throw new ApiError(401, "something went wrong while uploading coverImage file on cloudinary!")
+    }
+
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set: { coverImage: coverImage.url }
+        }
+    )
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Cover image updated successfully"
+        )
+    )
+
+} )
+
 export {
     registerUser,
     loginUser,
@@ -360,5 +390,6 @@ export {
     changeCurrentPassword,
     getCurrentUser,
     updateAccountDetails,
-    updateUserAvatar
+    updateUserAvatar,
+    updateCoverImage
 }
