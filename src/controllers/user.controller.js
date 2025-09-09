@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js"
 import { User } from "../models/user.model.js"
 import { uploadOnCloudinary } from "../utils/cloudinary.js"
 import { ApiResponse } from "../utils/ApiResponse.js"
+import { Subscription } from "../models/subscription.model.js"
 
 const generateAccessAndRefreshToken = async( userId ) => {
     try {
@@ -382,6 +383,69 @@ const updateCoverImage = asyncHandler( async(req, res) => {
 
 } )
 
+const getUserChannelProfile = asyncHandler( async(req, res) => {
+    const username = req.params;
+
+    if(!username.trim()){
+        throw new ApiError(404, "invalid param or username")
+    }
+
+    const channel = await User.aggregate(
+        [
+            {
+                $match: {
+                    "username": username?.toLowerCase()
+                }
+            },
+            {
+                $lookup: {
+                    from: "subscriptions",
+                    localField: "_id",
+                    foreignField: "channel",
+                    as: "subscribers"
+                }
+            },
+            {
+                $lookup: {
+                    from: "subscriptions",
+                    localField: "_id",
+                    foreignField: "subscriber",
+                    as: "subscribedTo"
+                }
+            },
+            {
+                $addFields: {
+                    "subscribers": {
+                        $size: "$subscribers"
+                    },
+                    "subscribedTo": {
+                        $size: "$subscribedTo"
+                    },
+                    "isSubscribed": {
+                        $cond: {
+                            if: {
+                                $in: [ req.user?._id , "$Subscriptions.subscriber" ]
+                            } ,
+                            then: true ,
+                            else: false
+                        }
+                    }
+                }
+            }
+        ]
+    )
+
+    if(!channel){
+        throw new ApiError(404, "channel not found")
+    }
+
+    return res.status(200)
+    .json(
+        new ApiResponse(200, channel[0], "User channel fetched successfully")
+    )
+
+} )
+
 export {
     registerUser,
     loginUser,
@@ -391,5 +455,6 @@ export {
     getCurrentUser,
     updateAccountDetails,
     updateUserAvatar,
-    updateCoverImage
+    updateCoverImage,
+    getUserChannelProfile
 }
