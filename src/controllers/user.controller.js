@@ -13,10 +13,9 @@ const generateAccessAndRefreshToken = async( userId ) => {
         const user = await User.findById(userId);
 
         const accessToken = await user.generateAccessToken();
-        console.log(accessToken);
         
         const refreshToken =  await user.generateRefreshToken();
-
+        
         user.refreshToken = refreshToken;
 
         await user.save({ validateBeforeSave: false })
@@ -122,7 +121,8 @@ const loginUser = asyncHandler( async(req, res) => {
 
     if( !user ) throw new ApiError(404, "user not found, please register")
 
-    const isPasswordValid = user.isPasswordCorrect(password);
+    const isPasswordValid = await user.isPasswordCorrect(password);
+    
 
     if( !isPasswordValid ) throw new ApiError(401, "invalid user credentials")
 
@@ -186,7 +186,7 @@ const refreshAccessToken = asyncHandler( async(req, res) => {
     // I.E. if same( regenerate access token ) else()login again
     // -> give response
     
-    const incomingRefreshToken = await req.cookies.refreshToken || await req.body.refreshToken;
+    const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
 
     if( !incomingRefreshToken ){
@@ -202,7 +202,6 @@ const refreshAccessToken = asyncHandler( async(req, res) => {
             throw new ApiError(401, "invalid refresh token" )
         }
         
-
         if( user.refreshToken != incomingRefreshToken ){
             throw new ApiError(401, "refresh token expired or used")
         }
@@ -216,14 +215,17 @@ const refreshAccessToken = asyncHandler( async(req, res) => {
 
         return res
         .status(200)
-        .cookie( "Access Token", accessToken, options )
-        .cookie( "Refresh Token", newRefreshToken, options )
+        .cookie("accessToken", accessToken, options)
+        .cookie("refreshToken", newRefreshToken, options)
         .json(
-            200,
-            {
-                accessToken, "refreshToken": newRefreshToken,
-            },
-            "Access token Refreshed Successfully"
+            new ApiResponse(
+                200,
+                {
+                    accessToken,
+                    "refreshToken": newRefreshToken
+                }
+            ),
+            "Access token refreshed sucsessfully"
         )
 
     } catch (error) {
@@ -253,12 +255,13 @@ const changeCurrentPassword = asyncHandler( async(req, res) => {
         throw new ApiError(401, "user not found")
     }
 
-    const isPasswordCorrect = user.isPasswordCorrect(currentPassword)
+    const isPasswordCorrect = await user.isPasswordCorrect(currentPassword)
 
     if( !isPasswordCorrect ){
         throw new ApiError(401, "incorrect password")
     }
-
+    console.log(user.password);
+    
     user.password = newPassword;
 
     await user.save({validateBeforeSave: false});
@@ -284,7 +287,12 @@ const getCurrentUser = asyncHandler( async(req, res) => {
     // if( !req.user ){
     //     throw new ApiError(401, "User not found")
     // }
+
+    // const user = await User.findById( req.user._id );
+    // console.log(user);
     
+    
+
     return res
     .status(200)
     .json(
