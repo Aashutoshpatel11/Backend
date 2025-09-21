@@ -1,1 +1,1 @@
-export const DB_NAME='Streamly';
+export const DB_NAME="Streamly"
