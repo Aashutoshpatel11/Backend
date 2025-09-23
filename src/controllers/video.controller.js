@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Video } from "../models/video.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
+import mongoose from "mongoose";
 
 // const getAllVideos = asyncHandler( async(req, res) => {
 
@@ -93,7 +94,127 @@ const publishAVideo = asyncHandler( async(req, res) => {
 
 } )
 
+const getVideoById = asyncHandler( async(req, res) => {
+    const {videoId} = req.params
+    const video = await Video.findById(videoId)
+
+    if(!video){
+         throw new ApiError( 401, "video not found" )
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            video,
+            "video fetched successfully"
+        )
+    )
+
+} )
+
+const updateVideo = asyncHandler( async(req, res) => {
+    // verify user
+    // take videoId from params
+    // take thumbnail, title, description from req.body
+    // get video object from db
+    //  update and save
+
+    const {title, description} = req.body
+    if( !title || !description ){
+        throw new ApiError( 401, "both title and description are required" )
+    }
+
+    const {videoId} = req.params
+    if( !videoId ){
+        throw new ApiError(404, "invalid video id")
+    }
+
+    const thumbnailLocalPath = req.file?.path
+    if(!thumbnailLocalPath){
+        throw new ApiError(404, "Thumbnail is required" )
+    }
+
+    const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
+    if(!thumbnail) {
+        throw new ApiError(401, "thumbnail upload failed on cloudinary")
+    }
+
+    const video = await Video.findOneAndUpdate(
+        {
+            _id: videoId,
+            owner: new mongoose.Types.ObjectId(req.user?._id)
+        },
+        {
+            $set: {
+                title,
+                description,
+                thumbnail: thumbnail?.url
+            }
+        },
+        {
+            new: true
+        }
+    )
+    
+    if( !video ){
+        throw new ApiError(404, "db not updated or unauthorised user")
+    }
+ 
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            video,
+            "Video details updated successfully"
+        )
+    )
+} )
+
+const deleteVideo = asyncHandler( async(req, res) => {
+    const {videoId} = req.params;
+    if(!videoId){
+        throw new ApiError(401, "Invalid video id")
+    }
+
+    // const video = await Video.findById(videoId)
+    // if( !video ){
+    //     throw new ApiError(404, "video not found")
+    // }
+    
+    // if( video.owner.toString() !== req.user._id.toString() ){
+    //     throw new ApiError(400, "user is unauthorised to perform update operation ")
+    // }
+
+    // await Video.findByIdAndDelete(videoId)
+
+    const video = await Video.findOneAndDelete(
+        {
+            _id: videoId,
+            owner: new mongoose.Types.ObjectId(req.user._id) 
+        }
+    )
+
+    if(!video){
+        throw new ApiError(404, "video not found or user is unauthorised to perform delete operation")  
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            "Video deleted successfully"
+        )
+    )
+} )
+
 export {
     // getAllVideos,
-    publishAVideo
+    publishAVideo,
+    getVideoById,
+    updateVideo,
+    deleteVideo
 }
