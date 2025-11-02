@@ -18,9 +18,13 @@ app.use( cookieParser() );
 
 import { userRoute } from "./routes/user.route.js";
 import { videoRoute } from "./routes/video.route.js";
+import { tweetRoute } from "./routes/tweet.route.js";
+import { playlistRoute } from "./routes/playlist.route.js";
 
 app.use( "/api/v1/user", userRoute )
 app.use( "/api/v1/video", videoRoute )
+app.use( "/api/v1/tweet", tweetRoute )
+app.use( "/api/v1/playlist", playlistRoute )
 
 
 export  {app};
