@@ -22,6 +22,9 @@ import { tweetRoute } from "./routes/tweet.route.js";
 import { playlistRoute } from "./routes/playlist.route.js";
 import { likeRoute } from "./routes/like.route.js";
 import { commentRoute } from "./routes/comment.route.js";
+import { healthcheck } from "./controllers/healthcheck.controller.js";
+import { subscriptionRouter } from "./routes/subscription.route.js";
+import { dashboardRouter } from "./routes/dashboard.route.js";
 
 app.use( "/api/v1/user", userRoute )
 app.use( "/api/v1/video", videoRoute )
@@ -29,6 +32,9 @@ app.use( "/api/v1/tweet", tweetRoute )
 app.use( "/api/v1/playlist", playlistRoute )
 app.use( "/api/v1/like", likeRoute )
 app.use( "/api/v1/comment", commentRoute )
+app.use( "/api/v1/health", healthcheck )
+app.use( "/api/v1/subscription", subscriptionRouter )
+app.use( '/api/v1/dashboard' , dashboardRouter ) 
 
 
 export  {app};
