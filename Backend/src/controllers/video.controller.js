@@ -41,6 +41,35 @@ import mongoose from "mongoose";
 
 // } )
 
+const getAllVideos = asyncHandler( async(req, res) => {
+    console.log('here');
+    
+    const videos = await Video.find().populate('owner')
+    console.log("VIDEOS");
+    console.log(videos);
+    
+
+    if(!videos){
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                "NO video uploaded yet",
+                // videos
+            )
+        )
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            "Videos fetched successfully",
+            // videos
+        )
+    )
+} )
+
 const publishAVideo = asyncHandler( async(req, res) => {
     // get title and description from req.body
     // get video and thumbnail from req.files
@@ -58,10 +87,14 @@ const publishAVideo = asyncHandler( async(req, res) => {
             400, "All fields (title, description, video, thumbnail) are required"
         )
     }
+
+    // console.log("HEREHERE");
+    
     
     const video = await uploadOnCloudinary(videoLocalPath)
     const thumbnail = await uploadOnCloudinary(thumbnailLocalPath)
-    
+
+    // console.log(video);
 
     if( !video || !thumbnail ){
         throw new ApiError(
@@ -212,7 +245,7 @@ const deleteVideo = asyncHandler( async(req, res) => {
 } )
 
 export {
-    // getAllVideos,
+    getAllVideos,
     publishAVideo,
     getVideoById,
     updateVideo,
