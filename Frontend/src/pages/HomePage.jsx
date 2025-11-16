@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import VideoCard from '../components/VideoCard'
 import axios from 'axios'
+import HeroSection from '../components/HeroSection/HeroSection'
 
 function HomePage() {
     const [videos, setVideos] = useState([])
@@ -29,7 +30,28 @@ function HomePage() {
     
 
   return (
-    <div>HomePage</div>
+    <div>
+      <HeroSection/>
+      <div className='divider' ></div>
+      <div className='w-full px-4 sm:px-6 lg:px-8 pb-10' >
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6' >
+        {
+          videos.map( (video) => (
+            <VideoCard 
+            key={video.title} 
+            src={video.thumbnail}  
+            title={video.title}
+            views={video.views} 
+            duration={video.duration}
+            channelImageSrc={video.owner.avatar} 
+            channelName={video.owner.username}
+            videoId={video._id} 
+            />
+          ) )
+        }
+        </div>
+      </div>
+    </div>
   )
 }
 

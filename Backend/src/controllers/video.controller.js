@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { Video } from "../models/video.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import mongoose from "mongoose";
+import { User } from "../models/user.model.js";
 
 // const getAllVideos = asyncHandler( async(req, res) => {
 
@@ -55,7 +56,7 @@ const getAllVideos = asyncHandler( async(req, res) => {
         .json(
             new ApiResponse(
                 "NO video uploaded yet",
-                // videos
+                videos
             )
         )
     }
@@ -65,7 +66,7 @@ const getAllVideos = asyncHandler( async(req, res) => {
     .json(
         new ApiResponse(
             "Videos fetched successfully",
-            // videos
+            videos
         )
     )
 } )
