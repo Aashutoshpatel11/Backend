@@ -10,7 +10,6 @@ function HomePage() {
       try {
         const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/video/videos`)
         console.log(response);
-        
         setVideos(response.data.data)
         
       } catch (error) {
@@ -24,7 +23,7 @@ function HomePage() {
     }, [])
 
     useEffect( () => {
-      console.log(videos)
+      console.log("videos:", videos)
     }, [videos])
 
     
@@ -38,7 +37,7 @@ function HomePage() {
         {
           videos.map( (video) => (
             <VideoCard 
-            key={video.title} 
+            key={video._id} 
             src={video.thumbnail}  
             title={video.title}
             views={video.views} 
