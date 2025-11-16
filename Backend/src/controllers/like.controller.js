@@ -25,26 +25,27 @@ const toggleVideoLike = asyncHandler( async(req, res) => {
             likedBy: user,
             video
         })
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                "Video Liked successfully",
+                like
+            )
+        )
     }else{
         like = await Like.findByIdAndDelete(like._id)
-    }
-
-    if(!like){
-        throw new ApiError(
-            403,
-            "something went wrong"
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200,
+                "Video Unliked successfully",
+                like
+            )
         )
     }
-
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(
-            200,
-            "Video Like toggeled successfully",
-            like
-        )
-    )
 
 } ) 
 

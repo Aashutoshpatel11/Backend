@@ -1,21 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import VideoCard from '../components/VideoCard'
-import axios from 'axios'
 import HeroSection from '../components/HeroSection/HeroSection'
+import GetAllVideos from '../assets/GetAllVideos'
 
 function HomePage() {
     const [videos, setVideos] = useState([])
 
-    const getAllVideos = async() => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/video/videos`)
-        console.log(response);
-        setVideos(response.data.data)
-        
-      } catch (error) {
-        console.log("Error occured while fetching video :: frontend :: error :: ", error.message);
-        throw new Error(error)
-      }
+    const getAllVideos =  async() => {
+      const response = await GetAllVideos()
+      setVideos(response)
     }
 
     useEffect( () => {

@@ -12,11 +12,6 @@ function VideoCard({src, title, views, timestamp=0, channelImageSrc, channelName
           }}
         > 
           <div className='absolute bottom-1 right-1 rounded-md px-2 py-1 bg-black/50 text-xs font-semibold ' >{`${Math.floor(duration/3600)}:${Math.floor(duration/60)}:${Math.floor(duration%60)}`}</div>
-          {/* <img
-            src={src}
-            alt={title}
-            className="opacity-0 w-full h-full object-cover"
-          /> */}
         </figure>
         <div className="card-body flex flex-row pt-4 pr-4 pb-4 pl-2">
           <div>

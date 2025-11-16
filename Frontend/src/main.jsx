@@ -11,6 +11,8 @@ import Header from './components/Header/Header.jsx'
 // ROUTES IMPORTS
 import HomePage from './pages/HomePage.jsx'
 import VideoPage from './pages/VideoPage.jsx'
+import SignupPage from './pages/SignupPage.jsx'
+import LoginPage from './pages/LoginPage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -21,6 +23,8 @@ createRoot(document.getElementById('root')).render(
             <Route path='/' element= {<HomePage />} />
             <Route path='/video/:videoId' element= {<VideoPage />} />
           </Route>
+          <Route path='/signup'element={<SignupPage />} ></Route>
+          <Route path='/login'element={<LoginPage />} ></Route>
         </Routes>
       </BrowserRouter>
     </Provider>
