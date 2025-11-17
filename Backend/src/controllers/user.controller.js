@@ -55,6 +55,7 @@ const registerUser = asyncHandler( async(req, res)=>{
     }
 
     const avatarLocalPath = await req.files?.["avatar"][0].path;
+    
     // const coverImageLocalPath = await req.files?.["coverImage"][0].path;
     
     let coverImageLocalPath = "";
@@ -110,6 +111,8 @@ const loginUser = asyncHandler( async(req, res) => {
     // generate access and refresh token
     // update refresh token to user db
     // return access token (cookies)
+
+    console.log("Logging in user");
 
     const {email, username, password} = req.body
 
