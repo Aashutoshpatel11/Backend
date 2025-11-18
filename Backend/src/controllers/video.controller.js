@@ -43,13 +43,8 @@ import { User } from "../models/user.model.js";
 // } )
 
 const getAllVideos = asyncHandler( async(req, res) => {
-    console.log('here');
     
     const videos = await Video.find().populate('owner')
-    console.log("VIDEOS");
-    console.log(videos);
-    
-
     if(!videos){
         return res
         .status(200)

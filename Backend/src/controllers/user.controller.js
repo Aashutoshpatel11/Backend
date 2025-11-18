@@ -137,10 +137,11 @@ const loginUser = asyncHandler( async(req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: false, 
+        sameSite: "Lax", 
     }
 
-    return res
+    const response =  res
     .status(200)
     .cookie( "accessToken", accessToken, options)
     .cookie( "refreshToken", refreshToken, options )
@@ -153,11 +154,14 @@ const loginUser = asyncHandler( async(req, res) => {
             "user logged successfully"
         )
     )
-
-
+    console.log("COOKIES SET AFTER LOGIN::accessToken::", req.cookies.accessToken);
+    
+    return response
 } )
 
 const logoutUser = asyncHandler( async(req, res) => {
+    console.log("Logging User Out...");
+    
     await User.findByIdAndUpdate(
         req.user._id,
         {
@@ -172,7 +176,8 @@ const logoutUser = asyncHandler( async(req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: true
+        secure: false, 
+        sameSite: "Lax", 
     }
 
     return res

@@ -12,10 +12,10 @@ function LoginPage() {
 
     const loginUser = async (data) => {
         try {
-            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/user/login`, data)
-            dispatch(login(response.data.data))
-            
+            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/user/login`, data, {withCredentials: true})
+            console.log("LOGIN RESPONSE", response);
             if(response){
+                dispatch(login(response.data.data))
                 navigate('/')
             }
             return response
