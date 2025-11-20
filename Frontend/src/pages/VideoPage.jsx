@@ -9,8 +9,8 @@ import {useSelector} from 'react-redux'
 
 function VideoPage() {
   const [videosList, setVideosList] = useState([])
-  const [currentVideo, setCurrentVideo] = useState([])
-  const [userChannelSubscription, setuserChannelSubscription] = useState([])
+  const [currentVideo, setCurrentVideo] = useState({})
+  const [subscribedChannels, setSubscribedChannels] = useState([])
   const videoId = useParams()
   
 
@@ -23,12 +23,13 @@ function VideoPage() {
     getAllVideosList()
   } , [] )
 
+
   // GET CURRENT VIDEO
   const getCurrentVideo = async() => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/video/${videoId.videoId}`)
+      console.log("CURRENT VIDEO",response);
       setCurrentVideo(response.data.data)
-      console.log("currentVideo:", currentVideo);
     } catch (error) {
       console.log("Current Video::ERROR::", error.message);
       throw new Error(error)
@@ -38,11 +39,25 @@ function VideoPage() {
     getCurrentVideo()
   }, [])
 
+
   // GET USER CHANNEL SUBSCRIPTION
-  const getUSerChannelSubscription = async() => {
-    const user = useSelector( (state) => state.auth.userData )
-    const response = await axios.get(`${import.meta.ENV.VITE_SERVER_URL}/subscription/getSubscribedChannels/${user._id}`)
+  const getChannelSubscribed = async() => {
+    try {  
+      const user = await axios.get(`${import.meta.env.VITE_SERVER_URL}/user/current-user`, {withCredentials: true})
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/subscription/getSubscribedChannels/${user?.data?.data?._id}`)
+      if(response){
+        setSubscribedChannels(response.data.data)
+      }
+      return response
+    } catch (error) {
+      console.log("ERROR::GET CHANNEL SUBSCRIBED::", error.message);
+      throw new Error(error.message);
+    }
   }
+
+  useEffect(()=>{
+    getChannelSubscribed()
+  }, [])
 
   
     
@@ -53,9 +68,11 @@ function VideoPage() {
         videosrc={currentVideo.videoFile}
         title={currentVideo.title}
         channelName={currentVideo.owner?.username}
-        subscribers={"0"}
         likes={"0"}
         videoId={videoId}
+        ownerAvatar={currentVideo.owner?.avatar}
+        channelId={currentVideo.owner?._id}
+        subscribedChannels={subscribedChannels}
         />
         <div className='w-full mb-4 bg-neutral text-white/90 text-sm mt-4 rounded-2xl px-4 py-4 pb-8' >
           <p className='font-semibold text-white mb-2 ' >{"views : time ago"}</p>

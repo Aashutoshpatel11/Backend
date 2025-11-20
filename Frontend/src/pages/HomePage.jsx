@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react'
 import VideoCard from '../components/VideoCard'
 import HeroSection from '../components/HeroSection/HeroSection'
 import GetAllVideos from '../assets/GetAllVideos'
+import { useDispatch } from 'react-redux'
+import { login } from '../store/authSlice'
+import axios from 'axios'
 
 function HomePage() {
     const [videos, setVideos] = useState([])
+    const dispatch = useDispatch()
 
     const getAllVideos =  async() => {
       const response = await GetAllVideos()
@@ -18,8 +22,6 @@ function HomePage() {
     useEffect( () => {
       console.log("videos:", videos)
     }, [videos])
-
-    
 
   return (
     <div>
@@ -43,6 +45,7 @@ function HomePage() {
         }
         </div>
       </div>
+      <button onClick={() => getCurrentUser()} className='btn' type="button">get user</button>
     </div>
   )
 }

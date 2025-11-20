@@ -129,7 +129,7 @@ const loginUser = asyncHandler( async(req, res) => {
     const isPasswordValid = await user.isPasswordCorrect(password);
     
 
-    if( !isPasswordValid ) throw new ApiError(401, "invalid user credentials")
+    if( !isPasswordValid ) throw new ApiError(400, "invalid user credentials")
 
     const {accessToken, refreshToken} = await generateAccessAndRefreshToken(user._id)
 
@@ -137,8 +137,7 @@ const loginUser = asyncHandler( async(req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: false, 
-        sameSite: "Lax", 
+        secure: false
     }
 
     const response =  res
@@ -154,7 +153,7 @@ const loginUser = asyncHandler( async(req, res) => {
             "user logged successfully"
         )
     )
-    console.log("COOKIES SET AFTER LOGIN::accessToken::", req.cookies.accessToken);
+    // console.log("COOKIES SET AFTER LOGIN::accessToken::", req.cookies.accessToken);
     
     return response
 } )
@@ -176,8 +175,7 @@ const logoutUser = asyncHandler( async(req, res) => {
 
     const options = {
         httpOnly: true,
-        secure: false, 
-        sameSite: "Lax", 
+        secure: false
     }
 
     return res
@@ -289,26 +287,15 @@ const changeCurrentPassword = asyncHandler( async(req, res) => {
 } )
 
 const getCurrentUser = asyncHandler( async(req, res) => {
-    // console.log("here");
-
-    // console.log(await req.user);
-    
-
-    // if( !req.user ){
-    //     throw new ApiError(401, "User not found")
-    // }
-
-    // const user = await User.findById( req.user._id );
-    // console.log(user);
-    
-    
+    console.log("GETTING CURRENT USER");
+    const user = await req.user
 
     return res
     .status(200)
     .json(
         new ApiResponse(
             200,
-            await req.user,
+            user,
             "User details fetched successfully"
         )
     )

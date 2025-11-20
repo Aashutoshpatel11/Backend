@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
-import { logout } from '../../store/authSlice'
+import { logout, login } from '../../store/authSlice'
 import axios from 'axios'
 
 function Header() {
@@ -20,7 +20,7 @@ function Header() {
     const handleLogout = async() => {
         try {
             console.log("HERE");
-            const response = await axios.post(`http://localhost:5400/api/v1/user/logout`, {withCredentials: true})
+            const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/user/logout`,{}, {withCredentials: true})
             console.log("Logout response::", response);
             if(response){
                 dispatch(logout())
@@ -31,6 +31,25 @@ function Header() {
             throw new Error(error);
         }
     }
+
+    //CHECK IS USER LOGGED IN
+    const getCurrentUser = async() => {
+      try {
+        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/user/current-user`,{withCredentials: true})
+        console.log("CURRENT USER::", response);
+        
+        if(response){
+          dispatch(login(response.data.data))
+        }
+        return response
+      } catch (error) {
+        console.log("ERROR::GET CURRENT USER::", error);
+        throw new Error(error.message);
+      }
+    }
+    useEffect(()=> {
+      getCurrentUser()
+    }, [])
 
   return (
     <div className="navbar bg-base-300 shadow-sm">
