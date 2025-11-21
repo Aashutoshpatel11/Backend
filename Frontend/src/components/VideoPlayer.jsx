@@ -16,7 +16,7 @@ function VideoPlayer({videosrc, title, channelName="user", likes, videoId, owner
   const toggleSubscribe = async() =>{
     try {
         const response = await axios.patch(`${import.meta.env.VITE_SERVER_URL}/subscription/toggleSubscription/${channelId}`,{}, {withCredentials: true})
-        console.log("toggleSubscribe::RESPONSE::", response);
+        // console.log("toggleSubscribe::RESPONSE::", response);
         
         if(response){
             setIsSubscribed(isSubscribed? false : true )
@@ -68,7 +68,7 @@ function VideoPlayer({videosrc, title, channelName="user", likes, videoId, owner
         const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/subscription/getChannelSubscribers/${channelId}`,{withCredentials:true})
 
         if( response){
-          console.log("FILTER", response.data.data.filter( (item) => item.subscriber == currentUser._id ).length);
+          // console.log("FILTER", response.data.data.filter( (item) => item.subscriber == currentUser._id ).length);
           setIsSubscribed(response.data.data.filter( (item) => item.subscriber == currentUser._id ).length)
           setSubscriberCount(response.data?.data?.length)
         }

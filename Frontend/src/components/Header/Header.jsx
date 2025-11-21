@@ -9,7 +9,7 @@ function Header() {
     const dispatch = useDispatch()
     const [userStatus, setUserStatus] = useState()
     const status = useSelector( (state) => state.auth.status )
-    console.log("status", userStatus);
+    // console.log("status", userStatus);
     
 
     useEffect( () => {
@@ -36,7 +36,7 @@ function Header() {
     const getCurrentUser = async() => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/user/current-user`,{withCredentials: true})
-        console.log("CURRENT USER::", response);
+        // console.log("CURRENT USER::", response);
         
         if(response){
           dispatch(login(response.data.data))

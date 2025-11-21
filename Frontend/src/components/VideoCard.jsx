@@ -1,7 +1,8 @@
 import React from 'react'
 import { NavLink } from "react-router";
+import timeAgo from '../utils/TimeAgo';
 
-function VideoCard({src, title, views, timestamp=0, channelImageSrc, channelName, videoId, duration}) {
+function VideoCard({src, title, views, createdAt, channelImageSrc, channelName, videoId, duration}) {
   return (
     <NavLink to={`video/${videoId}`} className="block">
       <div className="card bg-base-100 w-full shadow-sm hover:bg-white/10 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-in-out cursor-pointer rounded-lg overflow-hidden">
@@ -29,10 +30,10 @@ function VideoCard({src, title, views, timestamp=0, channelImageSrc, channelName
               {title}
             </h2>
             <p className="text-white/80  text-sm">{channelName}</p>
-            <div className="flex gap-3 text-sm text-white/80 items-center ">
+            <div className="flex gap-2 text-sm text-white/80 items-center ">
               <div>{`views: ${views}`}</div>
               <div className="border-l border-white/80 h-3"></div>
-              <div>{timestamp}</div>
+              <div>{timeAgo(createdAt)}</div>
             </div>
           </div>
         </div>

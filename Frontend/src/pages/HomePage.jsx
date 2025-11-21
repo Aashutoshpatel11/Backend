@@ -19,9 +19,9 @@ function HomePage() {
       getAllVideos()
     }, [])
 
-    useEffect( () => {
-      console.log("videos:", videos)
-    }, [videos])
+    // useEffect( () => {
+    //   console.log("videos:", videos)
+    // }, [videos])
 
   return (
     <div>
@@ -40,6 +40,7 @@ function HomePage() {
             channelImageSrc={video.owner.avatar} 
             channelName={video.owner.username}
             videoId={video._id} 
+            createdAt={video.createdAt}
             />
           ) )
         }
