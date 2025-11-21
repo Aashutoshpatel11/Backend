@@ -41,6 +41,7 @@ function HomePage() {
             channelName={video.owner.username}
             videoId={video._id} 
             createdAt={video.createdAt}
+            ownerId={video.owner?._id}
             />
           ) )
         }

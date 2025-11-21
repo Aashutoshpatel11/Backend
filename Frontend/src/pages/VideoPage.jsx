@@ -156,6 +156,8 @@ function VideoPage() {
             createdAt={video.createdAt}
             videoId={video._id}
             duration={video.duration}
+            ownerId={video.owner?._id}
+            classes={"lg:w-full md:w-full w-full"}
             />
           ) )
         }

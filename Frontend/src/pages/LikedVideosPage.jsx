@@ -27,17 +27,23 @@ function LikedVideosPage() {
 
   return (
     <div className='w-full h-full p-10 md:px-12 lg:px-14 xl:px-30' >
+        <header className="mb-8">
+            <h1 className="text-3xl font-extrabold ">
+                Liked Videos
+            </h1>
+        </header>
         {
             likedVideos.map( (item) => (
                 <VideoCardHorizontal 
-                key={item?.video?._id}
-                thumbnail={item?.video?.thumbnail}
-                title={item?.video?.title}
-                channelName={item?.video?.owner?.username}
-                views={item?.video?.views}
-                createdAt={item?.video?.createdAt}
-                videoId={item?.video?._id}
-                duration={item?.video?.duration}
+                key={item.video?._id}
+                thumbnail={item.video?.thumbnail}
+                title={item.video?.title}
+                channelName={item.video?.owner?.username}
+                views={item.video?.views}
+                createdAt={item.video?.createdAt}
+                videoId={item.video?._id}
+                duration={item.video?.duration}
+                ownerId={item.video?.owner?._id}
                 />
             ) )
         }

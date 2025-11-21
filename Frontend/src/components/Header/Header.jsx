@@ -3,12 +3,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { logout, login } from '../../store/authSlice'
 import axios from 'axios'
+import { NavLink } from 'react-router'
 
 function Header() {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [userStatus, setUserStatus] = useState()
     const status = useSelector( (state) => state.auth.status )
+    const user = useSelector( (state) => state.auth.userData )
     // console.log("status", userStatus);
     
 
@@ -72,11 +74,9 @@ function Header() {
                     tabIndex="-1"
                     className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
                     <li>
-                    <a className="justify-between">Profile
-                        <span className="badge">New</span>
-                    </a>
+                    <NavLink to={`/dashboard/${user._id}`}  className="justify-between">Dashboard
+                    </NavLink>
                     </li>
-                    <li><a>Settings</a></li>
                     <li><button className='hover:bg-error' onClick={()=>handleLogout()} type='button' >Logout</button ></li>
                 </ul>
                 </div>

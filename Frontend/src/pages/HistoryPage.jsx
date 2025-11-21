@@ -24,17 +24,23 @@ function HistoryPage() {
     }, [] )
   return (
     <div className='w-full h-full p-10 md:px-12 lg:px-14 xl:px-30' >
+        <header className="mb-8">
+            <h1 className="text-3xl font-extrabold ">
+                Watch History
+            </h1>
+        </header>
         {
             watchHistory && watchHistory.map( (item) => (
                 <VideoCardHorizontal 
-                key={item?._id}
-                thumbnail={item?.thumbnail}
-                title={item?.title}
-                channelName={item?.owner?.username}
-                views={Math.floor(item?.views)}
-                createdAt={item?.createdAt}
-                videoId={item?._id}
-                duration={item?.duration}
+                key={item._id}
+                thumbnail={item.thumbnail}
+                title={item.title}
+                channelName={item.owner?.username}
+                views={Math.floor(item.views)}
+                createdAt={item.createdAt}
+                videoId={item._id}
+                duration={item.duration}
+                ownerId={item.owner?._id}
                 />
             ) )
         }

@@ -62,7 +62,7 @@ function LoginPage() {
                         {errors.password && <span className='text-xs text-white/50' >*minimum length is 8</span>}
                     </legend>
                     <input 
-                    {...register("password", { required: true, minLength: 8 })}
+                    {...register("password", { required: true, minLength: 7 })}
                     type="text" className="input w-full " placeholder="Type here" />
                 </fieldset>
                 <div className='flex mt-5 justify-between items-center ' >
