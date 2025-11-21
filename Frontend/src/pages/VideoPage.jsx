@@ -51,7 +51,7 @@ function VideoPage() {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/comment/addComment/${videoId}`,
         {"content": comment},{withCredentials:true}
       )
-      setVideoComments( [response.data.data, ...videoComment] )
+      getVideoComments()
     } catch (error) {
       console.log("PUBLISH A COMMENT::ERROR::", error.message);
       throw new Error(error);
@@ -60,9 +60,14 @@ function VideoPage() {
 
   // GET VIDEO COMMENTS
   const getVideoComments = async () => {
-    const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/comment/videoComments/${videoId}`)
-    console.log("VIDEO COMMENTS::",response);
-    setVideoComments(response.data.data)
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/comment/videoComments/${videoId}`)
+      // console.log("VIDEO COMMENTS::",response);
+      setVideoComments(response.data.data)
+    } catch (error) {
+      console.log("GET VIDEO COMMENT::ERROR::", error.message);
+      throw new Error(error)
+    }
   }
 
   useEffect( () => {

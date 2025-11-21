@@ -134,11 +134,12 @@ const getLikedVideos = asyncHandler( async(req, res) => {
     const likedvideos = await Like.find({
         likedBy: user,
         video: { $ne: null }
-    })
+    }).populate('video')
 
     if(!likedvideos){
         throw new ApiError(
             404,
+            [],
             "No liked videos found"
         )
     }
@@ -148,8 +149,9 @@ const getLikedVideos = asyncHandler( async(req, res) => {
     .json(
         new ApiResponse(
             200,
+            likedvideos,
             "Liked videos fetched successfully",
-            likedvideos
+            
         )
     )
 } ) 

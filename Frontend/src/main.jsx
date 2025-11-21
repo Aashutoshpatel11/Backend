@@ -13,6 +13,7 @@ import HomePage from './pages/HomePage.jsx'
 import VideoPage from './pages/VideoPage.jsx'
 import SignupPage from './pages/SignupPage.jsx'
 import LoginPage from './pages/LoginPage.jsx'
+import LikedVideos from './pages/LikedVideos.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -22,6 +23,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='' element= {<App />} >
             <Route path='/' element= {<HomePage />} />
             <Route path='/video/:videoId' element= {<VideoPage />} />
+            <Route path='/liked-videos' element= {<LikedVideos/>} />
           </Route>
           <Route path='/signup'element={<SignupPage />} ></Route>
           <Route path='/login'element={<LoginPage />} ></Route>
