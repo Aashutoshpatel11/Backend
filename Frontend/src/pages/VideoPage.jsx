@@ -30,8 +30,10 @@ function VideoPage() {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/video/${videoId}`)
       // console.log("CURRENT VIDEO::", response.data.data);
-      
       setCurrentVideo(response.data.data)
+      const viewIncrementResponse = await axios.post(`${import.meta.env.VITE_SERVER_URL}/video/viewIncrement/${videoId}`,{},{withCredentials:true})
+      
+      return response
     } catch (error) {
       console.log("Current Video::ERROR::", error.message);
       throw new Error(error)
@@ -58,7 +60,7 @@ function VideoPage() {
           />
         }
         <div className='w-full mb-4 bg-neutral text-white/90 text-sm mt-4 rounded-2xl px-4 py-4 pb-8' >
-          <p className='font-semibold text-white mb-2 ' >{`${currentVideo.views} : ${timeAgo(currentVideo.createdAt)}`}</p>
+          <p className='font-semibold text-white mb-2 ' >{currentVideo && `${currentVideo.views} views : ${timeAgo(currentVideo.createdAt)}`}</p>
           <p>description</p>
         </div>
         <div className='flex flex-col gap-4' >

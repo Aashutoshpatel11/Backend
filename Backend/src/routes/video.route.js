@@ -7,6 +7,7 @@ import {
     updateVideo,
     deleteVideo,
     getAllVideos,
+    viewIncrement
  } from "../controllers/video.controller.js";
 
 const videoRoute = Router()
@@ -36,6 +37,7 @@ videoRoute.route("/delete/:videoId").delete(
     verifyJWT,
     deleteVideo
 )
+videoRoute.route("/viewIncrement/:videoId").post(viewIncrement)
 
 export {
     videoRoute

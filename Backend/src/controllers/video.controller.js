@@ -240,10 +240,37 @@ const deleteVideo = asyncHandler( async(req, res) => {
     )
 } )
 
+const viewIncrement = asyncHandler( async(req, res) => {
+    const {videoId} = req.params
+    const video = await Video.findByIdAndUpdate(
+        videoId,
+        {
+            $inc: {views: 0.5}
+        },
+        {new: true}
+    )
+    if(!video){
+        throw new ApiError(
+            204, "Something went Wrong in updating views"
+        )
+    }
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            {},
+            "views incremented successfully"
+        )
+    )
+} )
+
 export {
     getAllVideos,
     publishAVideo,
     getVideoById,
     updateVideo,
-    deleteVideo
+    deleteVideo,
+    viewIncrement
 }
