@@ -35,7 +35,7 @@ function HomePage() {
             key={video._id} 
             src={video.thumbnail}  
             title={video.title}
-            views={video.views} 
+            views={Math.floor(video.views)} 
             duration={video.duration}
             channelImageSrc={video.owner.avatar} 
             channelName={video.owner.username}

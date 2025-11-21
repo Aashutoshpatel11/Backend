@@ -36,32 +36,6 @@ function VideoPlayer({videosrc, title, channelName="user", likes, videoId, owner
     }
   }, [] )
 
-
-  // GET USER CHANNEL SUBSCRIBED   
-  //    if channel subscribers are in millions then this method can be used to check is user Subscribed the channel or not 
-  // const getChannelSubscribed = async() => {
-  //   try {  
-  //     const user = await axios.get(`${import.meta.env.VITE_SERVER_URL}/user/current-user`, {withCredentials: true})
-  //     const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/subscription/getSubscribedChannels/${user?.data?.data?._id}`,{withCredentials: true})
-  //     if(response){
-  //       setSubscribedChannels(response.data.data)
-  //       console.log("SUBSCRIBED CHANNELS",response.data.data);
-  //       // setIsSubscribed(response?.data?.data).filter(
-  //       // item => item.channel === channelId && item.subscriber === user?.data?.data?._id)
-  //     }
-  //     return response
-  //   } catch (error) {
-  //     console.log("ERROR::GET CHANNEL SUBSCRIBED::", error.message);
-  //     throw new Error(error.message);
-  //   }
-  // }
-
-  // useEffect(()=>{
-  //   getChannelSubscribed()
-  // }, [isSubscribed])
-
-
-
 // GET SUBSCRIBERS
   const getSubscribers = async () => {
     try {
@@ -82,6 +56,33 @@ function VideoPlayer({videosrc, title, channelName="user", likes, videoId, owner
   useEffect( ()=>{
     getSubscribers()
   }, [isSubscribed] )
+
+// TOGGLE LIKE
+  const toggleLike = async () => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/like/toggle-videoLike/${videoId}`,{},{withCredentials:true})
+      setIsLiked( !isLiked )
+      return response
+    } catch (error) {
+      console.log("TOGGLE LIKE::ERROR::", error.message);
+      throw new Error(error);
+    }
+  } 
+
+  const checkIsLiked = async() => {
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/like/getLikedVideos}`, {withCredentials:true})
+      setIsLiked( response.data?.data?.filter( (item) => item.likedBy == currentUser._id && item.video==videoId ).length )
+      return response
+    } catch (error) {
+      console.log("CHECK IS LIKED::ERROR::", error.message);
+      throw new Error(error);
+    }
+  }
+
+  useEffect( () => {
+
+  }, [] )
 
   return (
     <div>
@@ -112,10 +113,10 @@ function VideoPlayer({videosrc, title, channelName="user", likes, videoId, owner
                 </div>
                 <div>
                     <button 
+                    onClick={() => toggleLike()}
                     className='btn rounded-full btn-md p-2 px-4 text-white bg-base-300 hover:bg-white/10'
                     type="button">
                         {isLiked? (<TbThumbUpFilled />) : (<TbThumbUp />) }
-                        {likes}
                         </button>
                 </div>
             </div>

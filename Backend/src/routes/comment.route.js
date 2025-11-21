@@ -11,4 +11,4 @@ commentRoute.route('/deleteComment/:commentId').delete(verifyJWT, deleteComment)
 
 export {
     commentRoute
-}
+}  

@@ -30,8 +30,8 @@ const toggleVideoLike = asyncHandler( async(req, res) => {
         .json(
             new ApiResponse(
                 200,
+                like,
                 "Video Liked successfully",
-                like
             )
         )
     }else{
@@ -41,8 +41,8 @@ const toggleVideoLike = asyncHandler( async(req, res) => {
         .json(
             new ApiResponse(
                 200,
+                like,
                 "Video Unliked successfully",
-                like
             )
         )
     }

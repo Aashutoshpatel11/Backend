@@ -10,7 +10,7 @@ const getVideoComments = asyncHandler( async(req, res) => {
 
     const comments = await Comment.find({
         video: videoId
-    })
+    }).populate('owner')
 
     if( comments.length == 0 ){
         return res
@@ -18,6 +18,7 @@ const getVideoComments = asyncHandler( async(req, res) => {
         .json(
             new ApiResponse(
                 200,
+                [],
                 "No comments YET",
             )
         )
@@ -28,8 +29,9 @@ const getVideoComments = asyncHandler( async(req, res) => {
     .json(
         new ApiResponse(
             200,
+            comments,
             "comments fetched successfully",
-            comments
+            
         )
     )
 } )
@@ -61,8 +63,9 @@ const addComment = asyncHandler(async (req, res) => {
     .json(
         new ApiResponse(
             200,
+            comment,
             "Comment created successfully",
-            comment
+            
         )
     )
 
