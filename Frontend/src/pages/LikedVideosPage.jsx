@@ -2,7 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import VideoCardHorizontal from '../components/VideoCardHorizontal';
 
-function LikedVideos() {
+function LikedVideosPage() {
     const [likedVideos, setLikedVideos] = useState([])
 
 
@@ -45,4 +45,4 @@ function LikedVideos() {
   )
 }
 
-export default LikedVideos
+export default LikedVideosPage

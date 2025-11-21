@@ -15,6 +15,8 @@ function VideoPage() {
   const {videoId} = useParams()
   const [comment, setComment] = useState("")
   const [videoComment, setVideoComments] = useState([])
+
+  const userStatus = useSelector( (state) => state.auth.status )
   
 
   // GET ALL VIDEOS
@@ -34,6 +36,10 @@ function VideoPage() {
       // console.log("CURRENT VIDEO::", response.data.data);
       setCurrentVideo(response.data.data)
       await axios.post(`${import.meta.env.VITE_SERVER_URL}/video/viewIncrement/${videoId}`,{},{withCredentials:true})
+      if(userStatus){
+        await axios.get(`${import.meta.env.VITE_SERVER_URL}/user/add-to-watch-history/${videoId}`,{withCredentials:true})
+      }
+      
       return response
     } catch (error) {
       console.log("Current Video::ERROR::", error.message);

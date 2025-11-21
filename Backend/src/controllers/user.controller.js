@@ -7,6 +7,7 @@ import { Subscription } from "../models/subscription.model.js"
 import mongoose from "mongoose"
 import cookieParser from "cookie-parser"
 import jwt from "jsonwebtoken" 
+import { Video } from "../models/video.model.js"
 
 const generateAccessAndRefreshToken = async( userId ) => {
     try {
@@ -474,7 +475,7 @@ const getUserWatchHistory = asyncHandler( async(req, res) => {
         [
             {
                 $match: {
-                    "_id": mongoose.Types.ObjectId(req.user._id)
+                    "_id": req.user._id
                 }
             },
             {
@@ -502,6 +503,11 @@ const getUserWatchHistory = asyncHandler( async(req, res) => {
                             }
                         },
                         {
+                            $project: {
+                                password: 0
+                            }
+                        },
+                        {
                             $addFields:{
                                 owner: {
                                     $first: "$owner"
@@ -519,8 +525,39 @@ const getUserWatchHistory = asyncHandler( async(req, res) => {
     .json(
         new ApiResponse(
             200,
-            user?.watchHistory,
+            user,
             "Watch History fetched successfully"
+        )
+    )
+} )
+
+const addVideoToWatchHistory = asyncHandler( async (req, res) => {
+    const {videoId} = req.params
+
+    const user = await User.findById(req.user._id) 
+
+    if( user.watchHistory && user.watchHistory.some( element => element.toString() == videoId ) ){
+        return res
+        .status(200)
+        .json(
+        new ApiResponse(
+            200,
+            user,
+            "Watch History updated successfuly"
+        )
+    )
+    }
+
+    user.watchHistory.push(videoId)
+    const savedUser = await user.save({validateBeforeSave:false})
+
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200,
+            savedUser,
+            "Watch History updated successfuly"
         )
     )
 } )
@@ -536,5 +573,6 @@ export {
     updateUserAvatar,
     updateCoverImage,
     getUserChannelProfile,
-    getUserWatchHistory
+    getUserWatchHistory,
+    addVideoToWatchHistory
 }

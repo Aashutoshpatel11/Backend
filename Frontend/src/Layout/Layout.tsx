@@ -18,7 +18,7 @@ function Layout() {
         },
         {
             name: 'History',
-            href: '/',
+            href: '/history',
             icon: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" strokeLinejoin="round" strokeLinecap="round" strokeWidth="2" fill="none" stroke="currentColor" className="my-1.5 inline-block size-4"><path d="M12 8v4l3 3"></path><circle cx="12" cy="12" r="10"></circle></svg>
         },
         {
