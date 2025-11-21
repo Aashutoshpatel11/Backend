@@ -3,16 +3,24 @@ import asyncHandler from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { Subscription } from "../models/subscription.model.js";
+import { User } from '../models/user.model.js'
 
 const toggleSubscription = asyncHandler( async(req, res) => {
     console.log("TOGGLING SUBSCIPTION");
     
     const {channelId} = req.params
     const user = req.user
+    const channel = await User.findById(channelId)
+
+    if(!channel){
+        throw new ApiError(
+            401, "NO channel found"
+        )
+    }
 
     const subscription = await Subscription.find({
         subscriber: user._id,
-        channel: channelId
+        channel: channel
     })
 
     console.log("SUBSCRIPTION", subscription);
@@ -25,8 +33,9 @@ const toggleSubscription = asyncHandler( async(req, res) => {
         .json(
             new ApiResponse(
                 200,
+                deletedSubscription,
                 "Unsubscribed successfully",
-                deletedSubscription
+                
             )
         )
     }else{
@@ -39,8 +48,9 @@ const toggleSubscription = asyncHandler( async(req, res) => {
         .json(
             new ApiResponse(
                 200,
+                newSubscription,
                 "Subscribed successfully",
-                newSubscription
+                
             )
         )
     }
@@ -83,7 +93,7 @@ const getSubscribedChannels  = asyncHandler( async(req, res) => {
 
     const subscribedChannels = await Subscription.find({
         subscriber: userId
-    }).populate('owner')
+    }).populate("channel", "subscriber")
 
     if(subscribedChannels.length == 0){
         return res
@@ -102,8 +112,9 @@ const getSubscribedChannels  = asyncHandler( async(req, res) => {
     .json(
         new ApiResponse(
             200, 
+            subscribedChannels,
             "subscribed channels fetched successfully",
-            subscribedChannels
+            
         )
     )
 } )

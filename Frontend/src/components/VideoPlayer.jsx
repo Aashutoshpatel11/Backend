@@ -2,11 +2,14 @@ import axios from 'axios';
 import React, {useEffect, useState} from 'react'
 import { TbThumbUp } from "react-icons/tb";
 import { TbThumbUpFilled } from "react-icons/tb";
+import { useSelector } from 'react-redux';
 
-function VideoPlayer({videosrc, title, channelName="user", likes, videoId, ownerAvatar, channelId, subscribedChannels}) {
+function VideoPlayer({videosrc, title, channelName="user", likes, videoId, ownerAvatar, channelId}) {
   const [isLiked, setIsLiked] = useState(false)
   const [isSubscribed, setIsSubscribed] = useState(false)
   const [subscriberCount, setSubscriberCount] = useState(0)
+  const [subscribedChannels, setSubscribedChannels] = useState([])
+  const currentUser = useSelector( (state) => state.auth.userData )
 
 
 // TOGGLE SUBSCRIPTION BUTTON
@@ -34,15 +37,42 @@ function VideoPlayer({videosrc, title, channelName="user", likes, videoId, owner
   }, [] )
 
 
+  // GET USER CHANNEL SUBSCRIBED   
+  //    if channel subscribers are in millions then this method can be used to check is user Subscribed the channel or not 
+  // const getChannelSubscribed = async() => {
+  //   try {  
+  //     const user = await axios.get(`${import.meta.env.VITE_SERVER_URL}/user/current-user`, {withCredentials: true})
+  //     const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/subscription/getSubscribedChannels/${user?.data?.data?._id}`,{withCredentials: true})
+  //     if(response){
+  //       setSubscribedChannels(response.data.data)
+  //       console.log("SUBSCRIBED CHANNELS",response.data.data);
+  //       // setIsSubscribed(response?.data?.data).filter(
+  //       // item => item.channel === channelId && item.subscriber === user?.data?.data?._id)
+  //     }
+  //     return response
+  //   } catch (error) {
+  //     console.log("ERROR::GET CHANNEL SUBSCRIBED::", error.message);
+  //     throw new Error(error.message);
+  //   }
+  // }
+
+  // useEffect(()=>{
+  //   getChannelSubscribed()
+  // }, [isSubscribed])
+
+
+
 // GET SUBSCRIBERS
   const getSubscribers = async () => {
     try {
         const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/subscription/getChannelSubscribers/${channelId}`,{withCredentials:true})
-        console.log("GET SUBSCRIBER::RESPONSE", response.data);
-        
-        if(response){
-            setSubscriberCount(response.data?.data?.length)
+
+        if( response){
+          console.log("FILTER", response.data.data.filter( (item) => item.subscriber == currentUser._id ).length);
+          setIsSubscribed(response.data.data.filter( (item) => item.subscriber == currentUser._id ).length)
+          setSubscriberCount(response.data?.data?.length)
         }
+        return response
     } catch (error) {
         console.log("ERROR::GET SUBSCRIBER::", error.message);
         throw new Error(error.message);

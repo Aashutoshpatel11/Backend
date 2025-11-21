@@ -6,12 +6,13 @@ import VideoCardHorizontal from '../components/VideoCardHorizontal';
 import GetAllVideos from '../assets/GetAllVideos';
 import axios from 'axios';
 import {useSelector} from 'react-redux'
+import timeAgo from '../utils/TimeAgo';
 
 function VideoPage() {
   const [videosList, setVideosList] = useState([])
   const [currentVideo, setCurrentVideo] = useState({})
   const [subscribedChannels, setSubscribedChannels] = useState([])
-  const videoId = useParams()
+  const {videoId} = useParams()
   
 
   // GET ALL VIDEOS
@@ -27,8 +28,9 @@ function VideoPage() {
   // GET CURRENT VIDEO
   const getCurrentVideo = async() => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/video/${videoId.videoId}`)
-      console.log("CURRENT VIDEO",response);
+      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/video/${videoId}`)
+      // console.log("CURRENT VIDEO::", response.data.data);
+      
       setCurrentVideo(response.data.data)
     } catch (error) {
       console.log("Current Video::ERROR::", error.message);
@@ -37,45 +39,26 @@ function VideoPage() {
   }
   useEffect(()=>{
     getCurrentVideo()
-  }, [])
-
-
-  // GET USER CHANNEL SUBSCRIPTION
-  const getChannelSubscribed = async() => {
-    try {  
-      const user = await axios.get(`${import.meta.env.VITE_SERVER_URL}/user/current-user`, {withCredentials: true})
-      const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/subscription/getSubscribedChannels/${user?.data?.data?._id}`)
-      if(response){
-        setSubscribedChannels(response.data.data)
-      }
-      return response
-    } catch (error) {
-      console.log("ERROR::GET CHANNEL SUBSCRIBED::", error.message);
-      throw new Error(error.message);
-    }
-  }
-
-  useEffect(()=>{
-    getChannelSubscribed()
-  }, [])
-
-  
+  }, [videoId])
     
   return (
     <div className='  xl:flex w-full h-full p-10 gap-10' >
       <div className='w-full xl:w-2/3' >
-        <VideoPlayer 
-        videosrc={currentVideo.videoFile}
-        title={currentVideo.title}
-        channelName={currentVideo.owner?.username}
-        likes={"0"}
-        videoId={videoId}
-        ownerAvatar={currentVideo.owner?.avatar}
-        channelId={currentVideo.owner?._id}
-        subscribedChannels={subscribedChannels}
-        />
+        {
+          currentVideo.owner?._id && 
+          <VideoPlayer 
+          videosrc={currentVideo?.videoFile}
+          title={currentVideo?.title}
+          channelName={currentVideo?.owner?.username}
+          likes={"0"}
+          videoId={videoId}
+          ownerAvatar={currentVideo?.owner?.avatar}
+          channelId={currentVideo?.owner?._id}
+          // subscribedChannels={subscribedChannels}
+          />
+        }
         <div className='w-full mb-4 bg-neutral text-white/90 text-sm mt-4 rounded-2xl px-4 py-4 pb-8' >
-          <p className='font-semibold text-white mb-2 ' >{"views : time ago"}</p>
+          <p className='font-semibold text-white mb-2 ' >{`${currentVideo.views} : ${timeAgo(currentVideo.createdAt)}`}</p>
           <p>description</p>
         </div>
         <div className='flex flex-col gap-4' >
@@ -101,7 +84,9 @@ function VideoPage() {
       </div>
       <div className='w-full xl:w-1/3' >
         {
-          videosList.filter( (video) => {return video._id != videoId.videoId}).map( (video) => (
+          videosList
+          .filter( (video) => {return video._id != videoId})
+          .map( (video) => (
             <VideoCardHorizontal 
             key={video._id}
             thumbnail={video.thumbnail}
