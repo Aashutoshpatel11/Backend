@@ -3,7 +3,8 @@ import useSubscribe from './useSubscribe'
 
 
 function SubscribeBtn({channelId}) {
-    const {isSubscribed, toggleSubscribe } = useSubscribe(channelId)
+
+    const {setSubscriberCount, isSubscribed, toggleSubscribe } = useSubscribe(channelId)
   return (
     <button
     className={`btn rounded-full btn-md text-black ${isSubscribed? 'bg-white' : 'bg-error'} hover:bg-white/50`}
