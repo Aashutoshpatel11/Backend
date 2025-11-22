@@ -15,7 +15,7 @@ export default function useLike(type, id) {
     try {
       const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/like/toggle-${type}Like/${id}`,{},{withCredentials:true})
       console.log("Toggle Like Response::", response);
-      setIsLiked( !isLiked )
+      setIsLiked( prev => !prev )
       return response
     } catch (error) {
       console.log("TOGGLE LIKE::ERROR::", error.message);
@@ -23,12 +23,12 @@ export default function useLike(type, id) {
     }
   } 
 
+
+// CHECK IS LIKED
   const checkIsLiked = async() => {
     try {
       const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/like/getLikedVideos`, {withCredentials:true})
-    //   console.log("Liked Videos::", response);
-      
-      setIsLiked( response.data?.data?.filter( (item) => item.likedBy == currentUser._id && item.video==id ).length )
+      setIsLiked( response.data?.data?.find( (item) => item.likedBy == currentUser._id && item.video?._id==id )? true : false )
       return response
     } catch (error) {
       console.log("CHECK IS LIKED::ERROR::", error.message);
@@ -39,6 +39,7 @@ export default function useLike(type, id) {
   useEffect( () => {
     checkIsLiked()
   }, [] )
+
 
     return {
         isLiked,
