@@ -90,7 +90,7 @@ function VideoPage() {
           title={currentVideo?.title}
           channelName={currentVideo?.owner?.username}
           likes={"0"}
-          videoId={videoId}
+          id={currentVideo?._id}
           ownerAvatar={currentVideo?.owner?.avatar}
           channelId={currentVideo?.owner?._id}
           // subscribedChannels={subscribedChannels}

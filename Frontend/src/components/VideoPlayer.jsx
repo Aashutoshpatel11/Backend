@@ -5,41 +5,13 @@ import { TbThumbUpFilled } from "react-icons/tb";
 import { useSelector } from 'react-redux';
 import SubscribeBtn from '../assets/SubscribeBtn';
 import useSubscribe from '../assets/useSubscribe';
+import LikeBtn from '../assets/LikeBtn';
 
-function VideoPlayer({videosrc, title, channelName="user", likes, videoId, ownerAvatar, channelId}) {
+function VideoPlayer({videosrc, title, channelName="user", likes, id, ownerAvatar, channelId}) {
   const [isLiked, setIsLiked] = useState(false)
   const {subscriberCount} = useSubscribe(channelId)
   const currentUser = useSelector( (state) => state.auth.userData )
-
-
-
-// TOGGLE LIKE
-  // const toggleLike = async () => {
-  //   try {
-  //     const response = await axios.post(`${import.meta.env.VITE_SERVER_URL}/like/toggle-videoLike/${videoId}`,{},{withCredentials:true})
-  //     setIsLiked( !isLiked )
-  //     return response
-  //   } catch (error) {
-  //     console.log("TOGGLE LIKE::ERROR::", error.message);
-  //     throw new Error(error);
-  //   }
-  // } 
-
-  // const checkIsLiked = async() => {
-  //   try {
-  //     const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/like/getLikedVideos}`, {withCredentials:true})
-  //     setIsLiked( response.data?.data?.filter( (item) => item.likedBy == currentUser._id && item.video==videoId ).length )
-  //     return response
-  //   } catch (error) {
-  //     console.log("CHECK IS LIKED::ERROR::", error.message);
-  //     throw new Error(error);
-  //   }
-  // }
-
-  // useEffect( () => {
-  //   checkIsLiked()
-  // }, [] )
-
+  
   return (
     <div>
         <video 
@@ -64,12 +36,7 @@ function VideoPlayer({videosrc, title, channelName="user", likes, videoId, owner
                     <SubscribeBtn channelId={channelId} />
                 </div>
                 <div>
-                    <button 
-                    onClick={() => toggleLike()}
-                    className='btn rounded-full btn-md p-2 px-4 text-white bg-base-300 hover:bg-white/10'
-                    type="button">
-                        {isLiked? (<TbThumbUpFilled />) : (<TbThumbUp />) }
-                    </button>
+                    <LikeBtn type={"video"} id={id} />
                 </div>
             </div>
         </div>
