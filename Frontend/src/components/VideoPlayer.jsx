@@ -3,59 +3,14 @@ import React, {useEffect, useState} from 'react'
 import { TbThumbUp } from "react-icons/tb";
 import { TbThumbUpFilled } from "react-icons/tb";
 import { useSelector } from 'react-redux';
+import SubscribeBtn from '../assets/SubscribeBtn';
+import useSubscribe from '../assets/useSubscribe';
 
 function VideoPlayer({videosrc, title, channelName="user", likes, videoId, ownerAvatar, channelId}) {
   const [isLiked, setIsLiked] = useState(false)
-  const [isSubscribed, setIsSubscribed] = useState(false)
-  const [subscriberCount, setSubscriberCount] = useState(0)
-  const [subscribedChannels, setSubscribedChannels] = useState([])
+  let {subscriberCount} = useSubscribe(channelId)
   const currentUser = useSelector( (state) => state.auth.userData )
 
-
-// TOGGLE SUBSCRIPTION BUTTON
-  const toggleSubscribe = async() =>{
-    try {
-        const response = await axios.patch(`${import.meta.env.VITE_SERVER_URL}/subscription/toggleSubscription/${channelId}`,{}, {withCredentials: true})
-        // console.log("toggleSubscribe::RESPONSE::", response);
-        
-        if(response){
-            setIsSubscribed(isSubscribed? false : true )
-        }
-        return response
-    } catch (error) {
-        console.log("TOGGLE SUBSCRIBE BUTTON::ERRRO", error.message);
-        throw new Error(error.message);
-    }
-  }
-
-  useEffect( () => {
-    if( subscribedChannels.find( (channel) => channel.owner?._id == channelId  ) ){
-        setIsSubscribed(true)
-    }else{
-        setIsSubscribed(false)
-    }
-  }, [] )
-
-// GET SUBSCRIBERS
-  const getSubscribers = async () => {
-    try {
-        const response = await axios.get(`${import.meta.env.VITE_SERVER_URL}/subscription/getChannelSubscribers/${channelId}`,{withCredentials:true})
-
-        if( response){
-          // console.log("FILTER", response.data.data.filter( (item) => item.subscriber == currentUser._id ).length);
-          setIsSubscribed(response.data.data.filter( (item) => item.subscriber == currentUser._id ).length)
-          setSubscriberCount(response.data?.data?.length)
-        }
-        return response
-    } catch (error) {
-        console.log("ERROR::GET SUBSCRIBER::", error.message);
-        throw new Error(error.message);
-    }
-  }
-
-  useEffect( ()=>{
-    getSubscribers()
-  }, [isSubscribed] )
 
 // TOGGLE LIKE
   const toggleLike = async () => {
@@ -81,7 +36,7 @@ function VideoPlayer({videosrc, title, channelName="user", likes, videoId, owner
   }
 
   useEffect( () => {
-
+    checkIsLiked()
   }, [] )
 
   return (
@@ -105,11 +60,7 @@ function VideoPlayer({videosrc, title, channelName="user", likes, videoId, owner
                         <p className='font-semibold' >{channelName}</p>
                         <p className='text-white/50' >{subscriberCount}</p>
                     </div>
-                    <button
-                    className={`btn rounded-full btn-md text-black ${isSubscribed? 'bg-error' : 'bg-white'} hover:bg-white/50`}
-                    type="button"
-                    onClick={() => toggleSubscribe()}
-                    >{isSubscribed? 'Unsubscribe' : 'Subscribe' }</button>
+                    <SubscribeBtn channelId={channelId} />
                 </div>
                 <div>
                     <button 
@@ -117,7 +68,7 @@ function VideoPlayer({videosrc, title, channelName="user", likes, videoId, owner
                     className='btn rounded-full btn-md p-2 px-4 text-white bg-base-300 hover:bg-white/10'
                     type="button">
                         {isLiked? (<TbThumbUpFilled />) : (<TbThumbUp />) }
-                        </button>
+                    </button>
                 </div>
             </div>
         </div>

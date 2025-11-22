@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { logout, login } from '../../store/authSlice'
 import axios from 'axios'
-import { NavLink } from 'react-router'
+import { Link } from 'react-router'
 
 function Header() {
     const navigate = useNavigate()
@@ -74,8 +74,12 @@ function Header() {
                     tabIndex="-1"
                     className="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
                     <li>
-                    <NavLink to={`/dashboard/${user._id}`}  className="justify-between">Dashboard
-                    </NavLink>
+                    <Link to={`/Channel/${user.username}`}  className="justify-between">Profile
+                    </Link>
+                    </li>
+                    <li>
+                    <Link to={`/dashboard/${user._id}`}  className="justify-between">Dashboard
+                    </Link>
                     </li>
                     <li><button className='hover:bg-error' onClick={()=>handleLogout()} type='button' >Logout</button ></li>
                 </ul>

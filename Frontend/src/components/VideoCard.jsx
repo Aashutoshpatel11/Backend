@@ -8,7 +8,7 @@ function VideoCard({src, title, views, createdAt, channelImageSrc, channelName, 
   
   return (
     <div
-    onClick={()=> navigate(`video/${videoId}`)}
+    onClick={()=> navigate(`/video/${videoId}`)}
     className="card bg-base-100 w-full shadow-sm hover:bg-white/10 hover:shadow-lg hover:scale-[1.02] transition-all duration-200 ease-in-out cursor-pointer rounded-lg overflow-hidden">
       <figure
         className="h-44 bg-cover bg-center relative"
@@ -36,7 +36,7 @@ function VideoCard({src, title, views, createdAt, channelImageSrc, channelName, 
           <span 
           onClick={(e)=>{
             e.stopPropagation();
-            navigate(`/dashboard/${ownerId}`)
+            navigate(`/Channel/${channelName}`)
           }} 
           className="text-white/80 hover:underline  text-sm">
             {channelName}

@@ -25,7 +25,7 @@ function VideoCardHorizontal(
           <span
             onClick={(e) => {
               e.stopPropagation();      // Prevent triggering video link
-              navigate(`/dashboard/${ownerId}`);
+              navigate(`/Channel/${channelName}`);
             }}
             className="hover:underline text-xs text-white/80 line-clamp-1 mb-1 cursor-pointer"
           >

@@ -408,9 +408,12 @@ const updateCoverImage = asyncHandler( async(req, res) => {
 } )
 
 const getUserChannelProfile = asyncHandler( async(req, res) => {
-    const username = req.params;
+    let {username} = req.params;
+    username = username.trim().toLowerCase();
+    console.log("username:", username);
+    
 
-    if(!username.trim()){
+    if(!username){
         throw new ApiError(404, "invalid param or username")
     }
 
@@ -418,7 +421,7 @@ const getUserChannelProfile = asyncHandler( async(req, res) => {
         [
             {
                 $match: {
-                    "username": username?.toLowerCase()
+                    "username": username
                 }
             },
             {
@@ -438,6 +441,25 @@ const getUserChannelProfile = asyncHandler( async(req, res) => {
                 }
             },
             {
+                $lookup: {
+                    from: "videos",
+                    localField: "_id",
+                    foreignField: "owner",
+                    as: "videos",
+                    pipeline: [
+                        {
+                            $lookup: {
+                                from: "users",
+                                localField: "owner",
+                                foreignField: "_id",
+                                as: "owner",
+                            }
+                        }
+                    ]
+                    
+                }
+            },
+            {
                 $addFields: {
                     "subscribers": {
                         $size: "$subscribers"
@@ -446,13 +468,7 @@ const getUserChannelProfile = asyncHandler( async(req, res) => {
                         $size: "$subscribedTo"
                     },
                     "isSubscribed": {
-                        $cond: {
-                            if: {
-                                $in: [ req.user?._id , "$Subscriptions.subscriber" ]
-                            } ,
-                            then: true ,
-                            else: false
-                        }
+                        $eq: ["$subscriptions.subscriber", req.user._id]
                     }
                 }
             }
@@ -465,7 +481,10 @@ const getUserChannelProfile = asyncHandler( async(req, res) => {
 
     return res.status(200)
     .json(
-        new ApiResponse(200, channel[0], "User channel fetched successfully")
+        new ApiResponse(
+            200, 
+            channel[0], 
+            "User channel fetched successfully")
     )
 
 } )
